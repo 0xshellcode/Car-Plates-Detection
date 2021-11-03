@@ -40,10 +40,15 @@ while(vid_capture.isOpened()):
             approx = cv2.approxPolyDP(contour, 10, True)
             if len(approx) == 4:
                 location = approx
+                x, y, w, h = cv2.boundingRect(contour)
                 break
 
         print(location)
         cv2.drawContours(frame, [contour], 0, (0, 255, 0), 2)
+        frame[y:y+h, x:x +
+              w] = cv2.GaussianBlur(frame[y:y+h, x:x+w], (15, 15), cv2.BORDER_DEFAULT)
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        #cv2.imshow("Frame", fame)
         cv2.imshow('Frame', frame)
 
         # 20 is in milliseconds, try to increase the value, say 50 and observe
