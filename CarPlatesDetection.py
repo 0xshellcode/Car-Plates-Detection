@@ -6,15 +6,15 @@ path = '.\haarcascade\\'
 models = ['haarcascade_cars.xml',
           'haarcascade_russian_plate_number.xml', ]
 
-fullPath = f'{path}{models[1]}'
+fullPath = f'{path}{models[0]}'
 platesClassifiers = cv2.CascadeClassifier(fullPath)
 
-videosSet = []
-
+videosPath = '.\\videos\\'
+videosSet = ['video1', 'video2']
+fullVideoPath = f'{videosPath}{videosSet[1]}.mp4'
 
 # Create a video capture object, in this case we are reading the video from a file
-vido_capture = cv2.VideoCapture(
-    'puebla_puebla_street_cloudy_noon_300821_1230.mp4')
+vido_capture = cv2.VideoCapture(fullVideoPath)
 
 if (vido_capture.isOpened() == False):
     print("Error opening the video file")
@@ -41,6 +41,8 @@ while(vido_capture.isOpened()):
 
         for (x, y, w, h) in plates:
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+            frame[y:y+h, x:x +
+                  w] = cv2.GaussianBlur(frame[y:y+h, x:x+w], (15, 15), cv2.BORDER_DEFAULT)
 
         cv2.imshow('Frame', frame)
         # 20 is in milliseconds, try to increase the value, say 50 and observe
