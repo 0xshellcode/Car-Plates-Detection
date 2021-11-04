@@ -4,7 +4,7 @@ import imutils
 
 videosPath = '.\\videos\\'
 videosSet = ['video1']
-fullVideoPath = f'{videosPath}{videosSet[1]}.mp4'
+fullVideoPath = f'{videosPath}{videosSet[0]}.mp4'
 
 
 # Create a video capture object, in this case we are reading the video from a file
