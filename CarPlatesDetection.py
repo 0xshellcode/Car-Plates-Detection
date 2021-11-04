@@ -1,21 +1,22 @@
 import cv2
 import imutils
 
+
+videosPath = '.\\videos\\'
+videosSet = ['video1']
+fullVideoPath = f'{videosPath}{videosSet[1]}.mp4'
+
+
 # Create a video capture object, in this case we are reading the video from a file
-vid_capture = cv2.VideoCapture(
-    '.mp4')
+vid_capture = cv2.VideoCapture(fullVideoPath)
 
 if (vid_capture.isOpened() == False):
     print("Error opening the video file")
-# Read fps and frame count
 else:
-    # Get frame rate information
-    # You can replace 5 with CAP_PROP_FPS as well, they are enumerations
+
+    # For debuggin purposes
     fps = vid_capture.get(5)
     print('Frames per second : ', fps, 'FPS')
-
-    # Get frame count
-    # You can replace 7 with CAP_PROP_FRAME_COUNT as well, they are enumerations
     frame_count = vid_capture.get(7)
     print('Frame count : ', frame_count)
 
@@ -48,10 +49,7 @@ while(vid_capture.isOpened()):
         frame[y:y+h, x:x +
               w] = cv2.GaussianBlur(frame[y:y+h, x:x+w], (15, 15), cv2.BORDER_DEFAULT)
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-        #cv2.imshow("Frame", fame)
         cv2.imshow('Frame', frame)
-
-        # 20 is in milliseconds, try to increase the value, say 50 and observe
         key = cv2.waitKey(20)
 
         if key == ord('q'):
