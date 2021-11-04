@@ -2,38 +2,39 @@ import cv2
 import imutils
 
 # Create a video capture object, in this case we are reading the video from a file
-vid_capture = cv2.VideoCapture(
+vido_capture = cv2.VideoCapture(
     'puebla_puebla_street_cloudy_noon_300821_1230.mp4')
 
-if (vid_capture.isOpened() == False):
+if (vido_capture.isOpened() == False):
     print("Error opening the video file")
 # Read fps and frame count
 else:
     # Get frame rate information
     # You can replace 5 with CAP_PROP_FPS as well, they are enumerations
-    fps = vid_capture.get(5)
+    fps = vido_capture.get(5)
     print('Frames per second : ', fps, 'FPS')
 
     # Get frame count
     # You can replace 7 with CAP_PROP_FRAME_COUNT as well, they are enumerations
-    frame_count = vid_capture.get(7)
+    frame_count = vido_capture.get(7)
     print('Frame count : ', frame_count)
 
-while(vid_capture.isOpened()):
-    # vid_capture.read() methods returns a tuple, first element is a bool
+while(vido_capture.isOpened()):
+    # vido_capture.read() methods returns a tuple, first element is a bool
     # and the second is frame
-    ret, frame = vid_capture.read()
+    ret, frame = vido_capture.read()
     if ret == True:
         # print(frame)
         # print(type(frame))
         #img = cv2.imread(frame)
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # Using gray scale
         bfilter = cv2.bilateralFilter(gray, 11, 17, 17)  # Noise Reduction
         edged = cv2.Canny(bfilter, 30, 200)  # Edge detection
         keypoints = cv2.findContours(
             edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         contours = imutils.grab_contours(keypoints)
-        contours = sorted(contours, key=cv2.contourArea, reverse=True)[:10]
+        contours = sorted(contours, key=cv2.contourArea, reverse=True)[
+            :10]  # Return the top 10 contours
 
         location = None
         for contour in contours:
@@ -48,7 +49,6 @@ while(vid_capture.isOpened()):
         frame[y:y+h, x:x +
               w] = cv2.GaussianBlur(frame[y:y+h, x:x+w], (15, 15), cv2.BORDER_DEFAULT)
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-        #cv2.imshow("Frame", fame)
         cv2.imshow('Frame', frame)
 
         # 20 is in milliseconds, try to increase the value, say 50 and observe
@@ -60,5 +60,5 @@ while(vid_capture.isOpened()):
         break
 
 # Release the video capture object
-vid_capture.release()
+vido_capture.release()
 cv2.destroyAllWindows()
