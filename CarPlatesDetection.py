@@ -3,7 +3,7 @@ import imutils
 
 # Create a video capture object, in this case we are reading the video from a file
 vid_capture = cv2.VideoCapture(
-    'puebla_puebla_street_cloudy_noon_300821_1230.mp4')
+    '.mp4')
 
 if (vid_capture.isOpened() == False):
     print("Error opening the video file")
