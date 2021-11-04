@@ -1,6 +1,17 @@
 import cv2
 import imutils
 
+
+path = '.\haarcascade\\'
+models = ['haarcascade_cars.xml',
+          'haarcascade_russian_plate_number.xml', ]
+
+fullPath = f'{path}{models[1]}'
+platesClassifiers = cv2.CascadeClassifier(fullPath)
+
+videosSet = []
+
+
 # Create a video capture object, in this case we are reading the video from a file
 vido_capture = cv2.VideoCapture(
     'puebla_puebla_street_cloudy_noon_300821_1230.mp4')
@@ -24,33 +35,14 @@ while(vido_capture.isOpened()):
     # and the second is frame
     ret, frame = vido_capture.read()
     if ret == True:
-        # print(frame)
-        # print(type(frame))
-        #img = cv2.imread(frame)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # Using gray scale
-        bfilter = cv2.bilateralFilter(gray, 11, 17, 17)  # Noise Reduction
-        edged = cv2.Canny(bfilter, 30, 200)  # Edge detection
-        keypoints = cv2.findContours(
-            edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        contours = imutils.grab_contours(keypoints)
-        contours = sorted(contours, key=cv2.contourArea, reverse=True)[
-            :10]  # Return the top 10 contours
+        plates = platesClassifiers.detectMultiScale(
+            gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30), maxSize=(300, 300))  # 1.2 or 1.3
 
-        location = None
-        for contour in contours:
-            approx = cv2.approxPolyDP(contour, 10, True)
-            if len(approx) == 4:
-                location = approx
-                x, y, w, h = cv2.boundingRect(contour)
-                break
+        for (x, y, w, h) in plates:
+            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
-        print(location)
-        cv2.drawContours(frame, [contour], 0, (0, 255, 0), 2)
-        frame[y:y+h, x:x +
-              w] = cv2.GaussianBlur(frame[y:y+h, x:x+w], (15, 15), cv2.BORDER_DEFAULT)
-        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
         cv2.imshow('Frame', frame)
-
         # 20 is in milliseconds, try to increase the value, say 50 and observe
         key = cv2.waitKey(20)
 
